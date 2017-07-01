@@ -29,13 +29,17 @@ public class Storage: NSTextStorage {
         fatalError("init(coder:) has not been implemented")
     }
 
+    required public init(itemProviderData data: Data, typeIdentifier: String) throws {
+        fatalError("init(itemProviderData:typeIdentifier:) has not been implemented")
+    }
+
     /// Finds attributes within a given range on a String.
     ///
     /// - parameter location: How far into the String to look.
     /// - parameter range:    The range to find attributes for.
     ///
     /// - returns: The attributes on a String within a certain range.
-    override public func attributes(at location: Int, effectiveRange range: NSRangePointer?) -> [String : Any] {
+    override public func attributes(at location: Int, effectiveRange range: NSRangePointer?) -> [NSAttributedStringKey : Any] {
         return backingStore.attributes(at: location, effectiveRange: range)
     }
 
@@ -54,7 +58,7 @@ public class Storage: NSTextStorage {
     ///
     /// - parameter attrs: The attributes to add to the string for the range.
     /// - parameter range: The range in which to add attributes.
-    override public func setAttributes(_ attrs: [String : Any]?, range: NSRange) {
+    override public func setAttributes(_ attrs: [NSAttributedStringKey : Any]?, range: NSRange) {
         self.beginEditing()
         backingStore.setAttributes(attrs, range: range)
         self.edited(.editedAttributes, range: range, changeInLength: 0)
@@ -82,7 +86,7 @@ public class Storage: NSTextStorage {
         for (style) in theme.styles {
             style.regex.enumerateMatches(in: backingString, options: .withoutAnchoringBounds, range: range, using: { (match, flags, stop) in
                 if match != nil {
-                    addAttributes(style.attributes, range: match!.rangeAt(0))
+                    addAttributes(style.attributes, range: match!.range(at: 0))
                 }
             })
         }

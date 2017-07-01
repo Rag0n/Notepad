@@ -26,7 +26,7 @@ public struct Theme {
     ///
     /// - returns: The Theme.
     public init(_ name: String) {
-        let bundle = Bundle(for: object_getClass(self))
+        let bundle = Bundle(for: object_getClass(self)!)
         
         let path: String
         
@@ -71,9 +71,9 @@ public struct Theme {
                 }
             }
             else { // Create a default body font so other styles can inherit from it.
-                let attributes = [
-                    NSForegroundColorAttributeName: UIColor.black,
-                    NSFontAttributeName: UIFont.systemFont(ofSize: 15)
+                let attributes: [NSAttributedStringKey: AnyObject] = [
+                    .foregroundColor: UIColor.black,
+                    .font: UIFont.systemFont(ofSize: 15)
                 ]
                 body = Style(element: .body, attributes: attributes)
             }
@@ -113,12 +113,12 @@ public struct Theme {
     /// - parameter attributes: The attributes to parse.
     ///
     /// - returns: The converted attribute/key constant pairings.
-    func parse(_ attributes: [String: AnyObject]) -> [String: AnyObject]? {
-        var final: [String: AnyObject] = [:]
+    func parse(_ attributes: [String: AnyObject]) -> [NSAttributedStringKey: AnyObject]? {
+        var final: [NSAttributedStringKey: AnyObject] = [:]
 
         if let color = attributes["color"] {
             let value = color as! String
-            final[NSForegroundColorAttributeName] = UIColor(hexString: value)
+            final[.foregroundColor] = UIColor(hexString: value)
         }
 
         if let font = attributes["font"] {
@@ -129,24 +129,24 @@ public struct Theme {
                 fontSize = size as! CGFloat
             }
             else {
-                let bodyFont: UIFont = body.attributes[NSFontAttributeName] as! UIFont
+                let bodyFont: UIFont = body.attributes[.font] as! UIFont
                 fontSize = bodyFont.pointSize
             }
 
             if fontName == "System" {
-                final[NSFontAttributeName] = UIFont.systemFont(ofSize: fontSize)
+                final[.font] = UIFont.systemFont(ofSize: fontSize)
             }
             else {
-                final[NSFontAttributeName] = UIFont(name: fontName, size: fontSize)
+                final[.font] = UIFont(name: fontName, size: fontSize)
             }
         }
         else {
             // Just change font size (based on body font) if no font is specified for item.
             if let size = attributes["size"] {
-                let bodyFont: UIFont = body.attributes[NSFontAttributeName] as! UIFont
+                let bodyFont: UIFont = body.attributes[.font] as! UIFont
                 let fontSize = size as! CGFloat
 
-                final[NSFontAttributeName] = UIFont(name: bodyFont.fontName, size: fontSize)
+                final[.font] = UIFont(name: bodyFont.fontName, size: fontSize)
             }
         }
 
