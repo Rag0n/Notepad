@@ -12,7 +12,10 @@ import UIKit
 public class Notepad: UITextView {
     public var theme: Theme? {
         get {
-            return storage.theme
+            if let storage = storage.theme {
+                return storage
+            }
+            return nil
         }
         set {
             guard let newValue = newValue else { return }
