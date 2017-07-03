@@ -10,6 +10,18 @@
 import UIKit
 
 public class Notepad: UITextView {
+    public var theme: Theme? {
+        get {
+            return storage.theme
+        }
+        set {
+            guard let newValue = newValue else { return }
+            self.backgroundColor = newValue.backgroundColor
+            self.tintColor = newValue.tintColor
+            storage.theme = newValue
+        }
+    }
+
     var storage: Storage = Storage()
 
     /// Creates a new Notepad.
@@ -20,17 +32,13 @@ public class Notepad: UITextView {
     /// - returns: A new Notepad.
     convenience public init(frame: CGRect, themeFile: String) {
         self.init(frame: frame, textContainer: nil)
-        self.storage.theme = Theme(themeFile)
-        self.backgroundColor = self.storage.theme.backgroundColor
-        self.tintColor = self.storage.theme.tintColor
+        self.theme = Theme(themeFile)
         self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     
     convenience public init(frame: CGRect, theme: Theme) {
         self.init(frame: frame, textContainer: nil)
-        self.storage.theme = theme
-        self.backgroundColor = self.storage.theme.backgroundColor
-        self.tintColor = self.storage.theme.tintColor
+        self.theme = theme
         self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
 
